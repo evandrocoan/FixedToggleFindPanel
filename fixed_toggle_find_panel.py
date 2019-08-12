@@ -5,9 +5,24 @@ g_widget_view = None
 g_is_panel_focused = False
 g_is_widget_focused = False
 
+g_toggle_comands = (
+    'toggle_wrap',
+    'toggle_in_selection',
+    'toggle_highlight',
+    'toggle_show_context',
+    'toggle_use_buffer',
+    'toggle_case_sensitive',
+    'toggle_regex',
+    'toggle_whole_word',
+    'toggle_preserve_case',
+)
 
 def is_panel_focused():
     return g_is_widget_focused
+
+
+class State(object):
+    is_running = False
 
 
 class HackListener(sublime_plugin.EventListener):
@@ -34,6 +49,30 @@ class HackListener(sublime_plugin.EventListener):
         # print( "view_has_name:", view_has_name )
         # print( "g_is_widget_focused:", g_is_widget_focused )
         # print( "g_is_panel_focused:", g_is_panel_focused )
+
+    def set_state(self):
+
+        if State.is_running:
+            State.is_running = False
+            return True
+
+        else:
+            State.is_running = True
+
+    # Uncommented this after this bug is fixed
+    # https://github.com/SublimeTextIssues/Core/issues/2198
+    #
+    # def on_window_command(self, command_name, args):
+    #     print('command_name', command_name, args)
+
+    # def on_text_command(self, command_name, args):
+    #     print('command_name', command_name, args)
+
+    #     if command_name in g_toggle_comands:
+    #         if self.set_state():
+    #             return
+
+    #         return ('fixed_toggle_find_panel', { "command": command_name })
 
 
 # https://github.com/SublimeTextIssues/Core/issues/2914
