@@ -62,11 +62,11 @@ class HackListener(sublime_plugin.EventListener):
     # Uncommented this after this bug is fixed
     # https://github.com/SublimeTextIssues/Core/issues/2198
     #
-    # def on_window_command(self, command_name, args):
-    #     print('command_name', command_name, args)
+    # def on_window_command(self, window, command_name, args):
+    #     print('window command_name', command_name, args)
 
-    # def on_text_command(self, command_name, args):
-    #     print('command_name', command_name, args)
+    # def on_text_command(self, view, command_name, args):
+    #     print('view command_name', command_name, args)
 
     #     if command_name in g_toggle_comands:
     #         if self.set_state():
