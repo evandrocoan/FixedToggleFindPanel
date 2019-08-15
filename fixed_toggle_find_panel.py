@@ -138,7 +138,7 @@ class FocusSideBarBugFixerCommand(sublime_plugin.WindowCommand):
 # https://github.com/SublimeTextIssues/Core/issues/2914
 class FixedToggleFindPanelCommand(sublime_plugin.WindowCommand):
 
-    def run(self, command, args={}):
+    def run(self, command, args={}, skip=False):
         window = self.window
         active_group = window.active_group()
         active_panel = window.active_panel()
@@ -152,8 +152,9 @@ class FixedToggleFindPanelCommand(sublime_plugin.WindowCommand):
         self.window.run_command( "show_panel", { "panel": "find", "reverse": False } )
         self.window.run_command( command, args )
 
-        # print('FixedToggleFindPanel running', command, args)
-        sublime.status_message( "Successfully toggled the setting '%s'" % command )
+        if not skip:
+            # print('FixedToggleFindPanel running', command, args)
+            sublime.status_message( "Successfully toggled the setting '%s'" % command )
 
         if active_panel:
             self.window.run_command( "show_panel", { "panel": active_panel } )
