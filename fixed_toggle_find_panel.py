@@ -22,6 +22,10 @@ def is_panel_focused():
     return g_is_panel_focused
 
 
+def widget_view():
+    return g_widget_view
+
+
 # https://forum.sublimetext.com/t/why-do-i-call-show-panel-with-output-exec-but-need-to-call-window-find-output-panel-exec-instead-of-window-find-output-panel-output-exec/45739
 def get_panel_name(panel_name):
     return panel_name[len("output."):] if panel_name.startswith("output.") else panel_name
