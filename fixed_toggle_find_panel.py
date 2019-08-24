@@ -1,3 +1,5 @@
+import sys
+
 import sublime
 import sublime_plugin
 
@@ -178,4 +180,29 @@ class FixedToggleFindPanelCommand(sublime_plugin.WindowCommand):
 
             if widget_had_focus and focused_widget:
                 self.window.focus_view( focused_widget )
+
+
+if sys.platform.startswith( 'linux' ):
+    g_view_selections = {}
+
+    # https://github.com/SublimeTextIssues/Core/issues/1022
+    class SelectionData(object):
+        def __init__(self):
+            self.selections = []
+
+    def SelectionState(view=None):
+        view = view or sublime.active_window().active_view()
+        return g_view_selections.setdefault( view.id(), SelectionData() )
+
+    class SelectionFixListener(sublime_plugin.EventListener):
+
+        def on_activated(self, view):
+            state = SelectionState( view )
+            selections = view.sel()
+            selections.add_all( state.selections )
+
+        def on_deactivated(self, view):
+            state = SelectionState( view )
+            selections = view.sel()
+            state.selections = [selection for selection in selections]
 
