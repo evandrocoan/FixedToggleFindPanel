@@ -188,6 +188,7 @@ if sys.platform.startswith( 'linux' ):
     # https://github.com/SublimeTextIssues/Core/issues/1022
     class SelectionData(object):
         def __init__(self):
+            self.do_not_save = False
             self.selections = []
 
     def SelectionState(view=None):
@@ -195,14 +196,39 @@ if sys.platform.startswith( 'linux' ):
         return g_view_selections.setdefault( view.id(), SelectionData() )
 
     class SelectionFixListener(sublime_plugin.EventListener):
+        last_view = None
+
+        def on_text_command(self, view, command_name, args):
+            # print('command_name', command_name, args)
+
+            # https://github.com/SublimeTextIssues/Core/issues/2198
+            if command_name == 'show_overlay':
+                SelectionState( view ).do_not_save = True
+
+                # print( 'on_text_command do_not_save', SelectionState( view ).do_not_save )
+                # show_overlay {"overlay": "goto", "text": ":"}
+                # if 'overlay' in args and args['overlay'] == 'goto':
+                #     SelectionState( view ).do_not_save = True
 
         def on_activated(self, view):
             state = SelectionState( view )
-            selections = view.sel()
-            selections.add_all( state.selections )
+            last_view = self.last_view
+
+            if last_view and view.settings().get('is_widget'):
+                SelectionState( last_view ).do_not_save = True
+
+            # print( 'on_activated do_not_save', SelectionState( view ).do_not_save )
+            if state.do_not_save:
+                state.do_not_save = False
+
+            else:
+                selections = view.sel()
+                selections.add_all( state.selections )
 
         def on_deactivated(self, view):
+            self.last_view = view
             state = SelectionState( view )
+
             selections = view.sel()
             state.selections = [selection for selection in selections]
 
