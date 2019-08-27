@@ -223,6 +223,7 @@ if sys.platform.startswith( 'linux' ):
 
             else:
                 selections = view.sel()
+                selections.clear()
                 selections.add_all( state.selections )
 
         def on_deactivated(self, view):
