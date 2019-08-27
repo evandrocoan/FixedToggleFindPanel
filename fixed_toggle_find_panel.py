@@ -222,9 +222,12 @@ if sys.platform.startswith( 'linux' ):
                 state.do_not_save = False
 
             else:
-                selections = view.sel()
-                selections.clear()
-                selections.add_all( state.selections )
+                state_selections = state.selections
+
+                if state_selections:
+                    selections = view.sel()
+                    selections.clear()
+                    selections.add_all( state_selections )
 
         def on_deactivated(self, view):
             self.last_view = view
