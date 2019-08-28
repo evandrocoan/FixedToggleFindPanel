@@ -48,6 +48,9 @@ if sys.platform.startswith( 'linux' ):
 
                 if state_selections:
                     selections = view.sel()
+
+                    # Fixed double selections being created when using cloned views and changing one of them
+                    selections.clear()
                     selections.add_all( state_selections )
 
         def on_deactivated(self, view):
