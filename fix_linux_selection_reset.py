@@ -45,6 +45,7 @@ if sys.platform.startswith( 'linux' ):
 
             else:
                 state_selections = state.selections
+                state.selections = None
 
                 if state_selections:
                     selections = view.sel()
@@ -54,8 +55,10 @@ if sys.platform.startswith( 'linux' ):
                     selections.add_all( state_selections )
 
         def on_deactivated(self, view):
-            self.last_view = view
-            state = State( view )
 
-            selections = view.sel()
-            state.selections = [selection for selection in selections]
+            if view.has_non_empty_selection_region():
+                self.last_view = view
+                selections = view.sel()
+
+                state = State( view )
+                state.selections = [selection for selection in selections]
