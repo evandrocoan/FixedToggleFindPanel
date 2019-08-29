@@ -18,6 +18,10 @@ g_toggle_comands = (
 )
 
 
+class State(object):
+    is_running_fixed_toggle_find_panel = False
+
+
 def is_panel_focused():
     return g_is_panel_focused
 
@@ -36,14 +40,7 @@ def get_panel_view(window, panel_name):
             window.find_output_panel( get_panel_name( panel_name ) )
 
 
-class State(object):
-    preview_on_click = False
-
-    is_running_focus_side_bar = False
-    is_running_fixed_toggle_find_panel = False
-
-
-class HackListener(sublime_plugin.EventListener):
+class ActivePanelListener(sublime_plugin.EventListener):
 
     def on_new(self, view):
         # print('on_new', view.buffer_id())
@@ -68,41 +65,14 @@ class HackListener(sublime_plugin.EventListener):
         # print( "g_is_widget_focused:", g_is_widget_focused )
         # print( "g_is_panel_focused:", g_is_panel_focused )
 
-    # def on_text_command(self, view, command_name, args):
-    #     print('view command_name', command_name, args)
-
-    def on_window_command(self, window, command_name, args):
-        # print('window command_name', command_name, args)
-
-        if command_name == 'focus_side_bar':
-
-            if State.is_running_focus_side_bar:
-                return
-
-            else:
-                State.is_running_focus_side_bar = True
-                settings = sublime.load_settings( 'Preferences.sublime-settings' )
-                preview_on_click = settings.get( 'preview_on_click' )
-
-                if preview_on_click:
-                    State.preview_on_click = preview_on_click
-                    settings.set( 'preview_on_click', False )
-
-                window.run_command( 'focus_side_bar' )
-                window.run_command( 'move', { "by": "lines", "forward": False } )
-                window.run_command( 'move', { "by": "lines", "forward": True } )
-
-                # https://github.com/SublimeTextIssues/Core/issues/1265
-                sublime.set_timeout( lambda: window.run_command( 'focus_side_bar_bug_fixer' ), 100 )
-
     def set_state(self):
 
-        if State.is_running_focus_side_bar:
-            State.is_running_focus_side_bar = False
+        if State.is_running_fixed_toggle_find_panel:
+            State.is_running_fixed_toggle_find_panel = False
             return True
 
         else:
-            State.is_running_focus_side_bar = True
+            State.is_running_fixed_toggle_find_panel = True
 
     # Uncommented this after this bug is fixed
     # https://github.com/SublimeTextIssues/Core/issues/2198
@@ -118,25 +88,6 @@ class HackListener(sublime_plugin.EventListener):
     #             return
 
     #         return ('fixed_toggle_find_panel', { "command": command_name })
-
-
-class FocusSideBarBugFixerCommand(sublime_plugin.WindowCommand):
-    """ Confusing "jumps" in Side Bar keyboard navigation
-    https://github.com/SublimeTextIssues/Core/issues/1265
-    """
-    def run(self):
-        # print('Running fix...')
-        window = self.window
-        window.run_command( 'move', { "by": "lines", "forward": False } )
-        window.run_command( 'move', { "by": "lines", "forward": True } )
-        window.run_command( 'focus_side_bar' )
-
-        if State.preview_on_click:
-            settings = sublime.load_settings( 'Preferences.sublime-settings' )
-            settings.set( 'preview_on_click', True )
-
-        State.preview_on_click = False
-        State.is_running_focus_side_bar = False
 
 
 # https://github.com/SublimeTextIssues/Core/issues/2914
