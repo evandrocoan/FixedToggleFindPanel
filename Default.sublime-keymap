@@ -10,6 +10,10 @@
     { "keys": ["ctrl+q", "alt+w"], "command": "toggle_whole_word" } ,
     { "keys": ["ctrl+q", "alt+a"], "command": "toggle_preserve_case" } ,
 
+    // https://github.com/SublimeTextIssues/Core/issues/1635
+    { "keys": ["ctrl+shift+x"], "command": "cut_without_newline" } ,
+    { "keys": ["ctrl+shift+c"], "command": "copy_without_newline" } ,
+
     // Delete these keybindings this after this bug is fixed
     // https://github.com/SublimeTextIssues/Core/issues/2198
     { "keys": ["ctrl+q", "alt+p"], "command": "fixed_toggle_find_panel", "args": {"command": "toggle_wrap" } } ,
