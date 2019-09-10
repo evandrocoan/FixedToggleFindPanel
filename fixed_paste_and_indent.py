@@ -7,6 +7,8 @@ REGION_NAME = "fixed_paste_and_indent"
 MAXIMUM_CLIPBOARD_SIZE = 10000
 
 
+# I am saving the state in this class because it is a royal pain in the ass to keep typing `global`
+# every time/everywhere I would like to use a global!
 class State(object):
     copied_lines = []
     extra_command = ""
